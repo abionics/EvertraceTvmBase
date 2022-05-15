@@ -1,0 +1,2 @@
+ton-client-py==1.33.1.0
+attrs==21.4.0
