@@ -1,8 +1,8 @@
 from tonclient.types import ParamsOfParse, ParamsOfQueryCollection
 
-from client import Client
-from models.data import AccountData
-from models.tvm.base import BaseTvm
+from tvmbase.client import Client
+from tvmbase.models.data import AccountData
+from tvmbase.models.tvm.base import BaseTvm
 
 
 class Account(BaseTvm):

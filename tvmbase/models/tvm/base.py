@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from tonclient.types import ParamsOfQueryCollection, ResultOfQueryCollection
 
-from client import Client
+from tvmbase.client import Client
 
 
 class BaseTvm(ABC):

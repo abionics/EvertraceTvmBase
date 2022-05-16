@@ -1,9 +1,9 @@
 from tonclient.types import ParamsOfParse, ParamsOfQueryCollection
 
-from client import Client
-from models.data import TransactionData
-from models.tvm.base import BaseTvm
-from utils.attrs_helper import convert_nested
+from tvmbase.client import Client
+from tvmbase.models.data import TransactionData
+from tvmbase.models.tvm.base import BaseTvm
+from tvmbase.utils.attrs_helper import convert_nested
 
 
 class Transaction(BaseTvm):

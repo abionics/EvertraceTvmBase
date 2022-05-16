@@ -1,8 +1,8 @@
 from enum import Enum
 
-from models.tvm.account import Account
-from models.tvm.message import Message
-from models.tvm.transaction import Transaction
+from tvmbase.models.tvm.account import Account
+from tvmbase.models.tvm.message import Message
+from tvmbase.models.tvm.transaction import Transaction
 
 
 class BocType(Enum):
