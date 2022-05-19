@@ -1,4 +1,4 @@
-from typing import Any, TYPE_CHECKING
+from typing import Any
 
 from tonclient.client import TonClient
 from tonclient.types import (
@@ -15,9 +15,6 @@ from tonclient.types import (
 from models.network import Network
 from utils.singleton import SingletonMeta
 
-if TYPE_CHECKING:
-    from models.tvm.account import Account
-
 
 class Client(TonClient, metaclass=SingletonMeta):
 
@@ -32,7 +29,8 @@ class Client(TonClient, metaclass=SingletonMeta):
 
     async def run_local(
             self,
-            account: 'Account',
+            address: str,
+            account_boc: str,
             abi: AbiContract,
             method: str,
             params: dict = None,
@@ -45,13 +43,13 @@ class Client(TonClient, metaclass=SingletonMeta):
         call_set = CallSet(function_name=method, input=params)
         message_params = ParamsOfEncodeMessage(
             abi=abi,
-            address=account.address,
+            address=address,
             signer=Signer.NoSigner(),
             call_set=call_set,
         )
         message = await self.abi.encode_message(params=message_params)
 
-        run_params = ParamsOfRunTvm(message=message.message, account=account.data.boc, abi=abi)
+        run_params = ParamsOfRunTvm(message=message.message, account=account_boc, abi=abi)
         result = await self.tvm.run_tvm(params=run_params)
         decoded = result.decoded.output
 
