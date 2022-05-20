@@ -25,7 +25,7 @@ class BlockData:
 class AccountData(_GraphQLMeta):
     id: str
     acc_type: int
-    acc_type_name: str
+    acc_type_name: str  # Uninit, Active, Frozen, NonExist
     balance: int = attrs.field(converter=hex_converter)
     bits: int = attrs.field(converter=hex_converter)
     boc: str

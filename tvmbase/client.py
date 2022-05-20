@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 from tonclient.client import TonClient
 from tonclient.types import (
@@ -15,6 +15,9 @@ from tonclient.types import (
 from models.network import Network
 from utils.singleton import SingletonMeta
 
+if TYPE_CHECKING:
+    from models.tvm.account import Account
+
 
 class Client(TonClient, metaclass=SingletonMeta):
 
@@ -29,16 +32,24 @@ class Client(TonClient, metaclass=SingletonMeta):
 
     async def run_local(
             self,
-            address: str,
-            account_boc: str,
             abi: AbiContract,
             method: str,
+            account: 'Account' = None,
+            account_params: (str, str) = None,
             params: dict = None,
             parse: bool = False,
     ) -> dict | Any:
         """
+        Use account or address_params
         :return: dict in case of `parse` is False, otherwise parse response and return Any type
         """
+        assert account is not None or account_params is not None, 'Arg `account` or `account_params` must be provided'
+        if account is not None:
+            address = account.address
+            account_boc = account.data.boc
+        else:
+            address, account_boc = account_params
+
         abi = Abi.Contract(abi)
         call_set = CallSet(function_name=method, input=params)
         message_params = ParamsOfEncodeMessage(
