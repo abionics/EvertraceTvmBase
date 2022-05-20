@@ -12,11 +12,11 @@ from tonclient.types import (
     ParamsOfRunTvm,
 )
 
-from models.network import Network
-from utils.singleton import SingletonMeta
+from tvmbase.models.network import Network
+from tvmbase.utils.singleton import SingletonMeta
 
 if TYPE_CHECKING:
-    from models.tvm.account import Account
+    from tvmbase.models.tvm.account import Account
 
 
 class Client(TonClient, metaclass=SingletonMeta):
