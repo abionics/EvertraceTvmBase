@@ -56,7 +56,7 @@ class MessageData(_GraphQLMeta):
     boc: str
     dst: str
     msg_type: int
-    msg_type_name: str
+    msg_type_name: str  # Internal, ExtIn, ExtOut
     src: str
     status: int
     status_name: str

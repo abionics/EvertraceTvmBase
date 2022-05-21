@@ -13,10 +13,9 @@ class AbiStorage(metaclass=SingletonMeta):
     def __init__(self, contracts_path: str, abi_path: str):
         self.contracts_path = contracts_path
         self.abi_path = abi_path
-        self.abis, self.paths = self._load_abis()
-        self._check_undetected_abis(self.paths)
+        self.abis = self._load_abis()
 
-    def _load_abis(self) -> (dict[str, AbiContract], set[str]):
+    def _load_abis(self) -> dict[str, AbiContract]:
         abis = dict()
         paths = set()
         contracts = self._load_json(self.contracts_path)
@@ -29,7 +28,8 @@ class AbiStorage(metaclass=SingletonMeta):
             abi_json = self._load_json(abi_full_path)
             abi = json_to_abi(abi_json)
             abis[name] = abi
-        return abis, paths
+        self._check_undetected_abis(paths)
+        return abis
 
     @staticmethod
     def _load_json(filename: str) -> dict:
@@ -53,6 +53,9 @@ class AbiStorage(metaclass=SingletonMeta):
                 path = os.path.join(subdir, file)
                 paths.add(path)
         return paths
+
+    def dict(self) -> dict[str, AbiContract]:
+        return self.abis
 
     def list(self) -> list[AbiContract]:
         return list(self.abis.values())

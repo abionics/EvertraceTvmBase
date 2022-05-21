@@ -40,5 +40,11 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     packages=find_packages(exclude=['tests', 'examples']),
+    install_requires=[
+        'ton-client-py>=1.33.1.0',
+        'attrs>=21.4.0',
+        'loguru>=0.6.0',
+        'jsonizer>=1.2.0',
+    ],
     zip_safe=False,
 )
