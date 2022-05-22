@@ -23,10 +23,11 @@ class Account(BaseTvm):
     @classmethod
     async def from_boc(cls, client: Client, boc: str, **kwargs) -> 'Account':
         if boc is None:  # account is not exists
-            return cls(client, kwargs['id'], data=None)
+            return cls(client, kwargs['idx'], data=None)
+        kwargs.pop('idx', None)
         parse_params = ParamsOfParse(boc=boc)
         parsed = await client.boc.parse_account(params=parse_params)
-        address = parsed.parsed.pop('id')
+        address = parsed.parsed['id']
         data = AccountData(**parsed.parsed, **kwargs)
         return cls(client, address, data)
 

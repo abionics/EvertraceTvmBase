@@ -30,7 +30,7 @@ class Message(BaseTvm):
         return await cls.from_boc(
             client,
             boc,
-            id=idx,
+            idx=idx,
             created_at=created_at,
             dst_transaction_id=dst_transaction_id,
             src_transaction_id=src_transaction_id,
@@ -44,10 +44,12 @@ class Message(BaseTvm):
 
     @classmethod
     async def from_boc(cls, client: Client, boc: str, **kwargs) -> 'Message':
+        kwargs.pop('idx', None)
         parse_params = ParamsOfParse(boc=boc)
         parsed = await client.boc.parse_message(params=parse_params)
-        idx = parsed.parsed.pop('id')
+        idx = parsed.parsed['id']
         created_at = parsed.parsed.pop('created_at', None)
-        assert created_at == kwargs['created_at'] or created_at is None, f'Different created at time in message {idx}'
+        assert 'created_at' not in kwargs or created_at is None or created_at == kwargs['created_at'], \
+            f'Different created at time in message {idx}'
         data = MessageData(**parsed.parsed, **kwargs)
         return cls(client, idx, data)

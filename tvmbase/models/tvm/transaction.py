@@ -23,10 +23,11 @@ class Transaction(BaseTvm):
 
     @classmethod
     async def from_boc(cls, client: Client, boc: str, **kwargs) -> 'Transaction':
+        kwargs.pop('idx', None)
         parse_params = ParamsOfParse(boc=boc)
         parsed = await client.boc.parse_transaction(params=parse_params)
         parsed_dict = parsed.parsed
         convert_nested(parsed_dict, TransactionData)
-        idx = parsed.parsed.pop('id')
+        idx = parsed.parsed['id']
         data = TransactionData(**parsed_dict, **kwargs)
         return cls(client, idx, data)

@@ -28,7 +28,7 @@ class BaseTvm(ABC):
             boc = result.result[0]['boc']
         except IndexError:
             boc = None
-        return await cls.from_boc(client, boc, id=idx)
+        return await cls.from_boc(client, boc, idx=idx)
 
     @classmethod
     @abstractmethod
