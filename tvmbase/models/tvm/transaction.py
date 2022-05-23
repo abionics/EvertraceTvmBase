@@ -23,7 +23,6 @@ class Transaction(BaseTvm):
 
     @classmethod
     async def from_boc(cls, client: Client, boc: str, **kwargs) -> 'Transaction':
-        kwargs.pop('idx', None)
         parse_params = ParamsOfParse(boc=boc)
         parsed = await client.boc.parse_transaction(params=parse_params)
         parsed_dict = parsed.parsed

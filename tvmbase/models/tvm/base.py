@@ -24,11 +24,8 @@ class BaseTvm(ABC):
 
     @classmethod
     async def from_query_result(cls, client: Client, idx: str, result: ResultOfQueryCollection) -> 'BaseTvm':
-        try:
-            boc = result.result[0]['boc']
-        except IndexError:
-            boc = None
-        return await cls.from_boc(client, boc, idx=idx)
+        boc = result.result[0]['boc']
+        return await cls.from_boc(client, boc)
 
     @classmethod
     @abstractmethod

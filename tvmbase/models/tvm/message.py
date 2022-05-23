@@ -30,7 +30,6 @@ class Message(BaseTvm):
         return await cls.from_boc(
             client,
             boc,
-            idx=idx,
             created_at=created_at,
             dst_transaction_id=dst_transaction_id,
             src_transaction_id=src_transaction_id,
@@ -44,7 +43,6 @@ class Message(BaseTvm):
 
     @classmethod
     async def from_boc(cls, client: Client, boc: str, **kwargs) -> 'Message':
-        kwargs.pop('idx', None)
         parse_params = ParamsOfParse(boc=boc)
         parsed = await client.boc.parse_message(params=parse_params)
         idx = parsed.parsed['id']
