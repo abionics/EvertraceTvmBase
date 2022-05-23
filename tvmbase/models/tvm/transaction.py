@@ -7,9 +7,10 @@ from tvmbase.utils.attrs_helper import convert_nested
 
 
 class Transaction(BaseTvm):
+    DATA_TYPE = TransactionData
 
-    def __init__(self, client: Client, idx: str, data: TransactionData):
-        super().__init__(client, idx)
+    def __init__(self, idx: str, data: TransactionData):
+        super().__init__(idx)
         self.data = data
 
     @staticmethod
@@ -29,4 +30,4 @@ class Transaction(BaseTvm):
         convert_nested(parsed_dict, TransactionData)
         idx = parsed.parsed['id']
         data = TransactionData(**parsed_dict, **kwargs)
-        return cls(client, idx, data)
+        return cls(idx, data)

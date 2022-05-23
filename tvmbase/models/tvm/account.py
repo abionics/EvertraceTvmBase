@@ -6,9 +6,10 @@ from tvmbase.models.tvm.base import BaseTvm
 
 
 class Account(BaseTvm):
+    DATA_TYPE: type = AccountData
 
-    def __init__(self, client: Client, address: str, data: AccountData | None):
-        super().__init__(client, address)
+    def __init__(self, address: str, data: AccountData | None):
+        super().__init__(address)
         self.data = data
 
     @staticmethod
@@ -33,12 +34,12 @@ class Account(BaseTvm):
         kw_address = kwargs.pop('idx', None)
         if boc is None:  # account is not exists
             assert kw_address is not None, 'Account must have boc or address'
-            return cls(client, kw_address, data=None)
+            return cls(kw_address, data=None)
         parse_params = ParamsOfParse(boc=boc)
         parsed = await client.boc.parse_account(params=parse_params)
         address = parsed.parsed['id']
         data = AccountData(**parsed.parsed, **kwargs)
-        return cls(client, address, data)
+        return cls(address, data)
 
     @classmethod
     async def from_address(cls, client: Client, address: str) -> 'Account':

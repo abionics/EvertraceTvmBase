@@ -6,9 +6,10 @@ from tvmbase.models.tvm.base import BaseTvm
 
 
 class Message(BaseTvm):
+    DATA_TYPE: type = MessageData
 
-    def __init__(self, client: Client, idx: str, data: MessageData):
-        super().__init__(client, idx)
+    def __init__(self, idx: str, data: MessageData):
+        super().__init__(idx)
         self.data = data
 
     @staticmethod
@@ -50,4 +51,4 @@ class Message(BaseTvm):
         assert 'created_at' not in kwargs or created_at is None or created_at == kwargs['created_at'], \
             f'Different created at time in message {idx}'
         data = MessageData(**parsed.parsed, **kwargs)
-        return cls(client, idx, data)
+        return cls(idx, data)

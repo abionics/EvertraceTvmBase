@@ -22,12 +22,13 @@ if TYPE_CHECKING:
 class Client(TonClient, metaclass=SingletonMeta):
 
     def __init__(self, network: Network):
+        self.network = network
         config = self.create_config(network)
         super().__init__(config, is_async=True)
 
     @staticmethod
     def create_config(network: Network) -> ClientConfig:
-        network_config = NetworkConfig(endpoints=network.endpoints)
+        network_config = NetworkConfig(endpoints=network.value.endpoints)
         return ClientConfig(network=network_config)
 
     async def run_local(

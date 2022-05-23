@@ -1,8 +1,13 @@
 import attrs
 
 
-def hex_converter(value: str) -> int:
-    return int(value, 16) if value is not None else None
+def hex_converter(value: str | int | None) -> int | None:
+    if isinstance(value, int):
+        return value
+    elif value is None:
+        return None
+    else:
+        return int(value, 16)
 
 
 @attrs.define(frozen=True)
