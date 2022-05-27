@@ -5,6 +5,7 @@ import attrs
 from tonclient.types import ParamsOfQueryCollection, ResultOfQueryCollection
 
 from tvmbase.client import Client
+from tvmbase.utils.attrs_helper import convert_nested
 
 
 class BaseTvm(ABC):
@@ -40,6 +41,7 @@ class BaseTvm(ABC):
         idx = dump['idx']
         data = dump['data']
         if data is not None:
+            convert_nested(data, cls.DATA_TYPE)
             data = cls.DATA_TYPE(**data)
         return cls(idx, data)
 

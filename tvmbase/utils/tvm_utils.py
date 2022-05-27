@@ -1,6 +1,6 @@
 import re
 
-ADDRESS_REGEX = re.compile(r'(0|-1):[0-9a-f]{64}')
+from tvmbase.constants import ADDRESS_REGEX
 
 
 def is_address(string: str) -> bool:
