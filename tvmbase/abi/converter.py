@@ -3,6 +3,9 @@ from tonclient.types import AbiContract, AbiFunction, AbiEvent, AbiData, AbiPara
 
 
 def json_to_abi(json: dict) -> AbiContract:
+    # fix abi via removing "outputs" field
+    for event in json['events']:
+        event.pop('outputs', None)
     parser = Jsonizer(AbiContract, AbiFunction, AbiEvent, AbiData, AbiParam, lowercase_keys=True, replace_space='_')
     return parser.parse(json)
 
