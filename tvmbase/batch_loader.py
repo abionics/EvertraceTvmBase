@@ -2,8 +2,10 @@ from loguru import logger
 from tonclient.types import ParamsOfQueryOperation, ParamsOfBatchQuery, ResultOfQueryCollection
 
 from tvmbase.client import Client
+from tvmbase.constants import GRAPHQL_LIMIT
 from tvmbase.models.boc_type import BocType
 from tvmbase.models.tvm.base import BaseTvm
+from tvmbase.types import TvmType
 
 
 class BatchLoader:
@@ -11,7 +13,8 @@ class BatchLoader:
     def __init__(self, client: Client):
         self.client = client
 
-    async def load(self, data: list[tuple[str, BocType]]) -> list[BaseTvm]:
+    async def load(self, data: list[tuple[str, BocType]]) -> list[TvmType]:
+        assert len(data) <= GRAPHQL_LIMIT, f'Too big batch, size is {len(data)} while max size is {GRAPHQL_LIMIT}'
         logger.debug(f'Loading batch with size {len(data)}...')
         operations = list()
         for idx, boc_type in data:
