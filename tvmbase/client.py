@@ -38,6 +38,7 @@ class Client(TonClient, metaclass=SingletonMeta):
             account: 'Account' = None,
             account_params: (str, str) = None,
             params: dict = None,
+            auto_answer_id: bool = True,
             parse: bool = False,
     ) -> dict | Any:
         """
@@ -50,6 +51,10 @@ class Client(TonClient, metaclass=SingletonMeta):
             account_boc = account.data.boc
         else:
             address, account_boc = account_params
+
+        if auto_answer_id:
+            params = params or dict()
+            self._set_answer_id(abi, method, params)
 
         abi = Abi.Contract(abi)
         call_set = CallSet(function_name=method, input=params)
@@ -71,6 +76,18 @@ class Client(TonClient, metaclass=SingletonMeta):
             return decoded.popitem()[1]
         else:
             return decoded
+
+    @staticmethod
+    def _set_answer_id(abi_contract: AbiContract, method: str, params: dict):
+        function = next(filter(
+            lambda f: f.name == method,
+            abi_contract.functions
+        ))
+        if len(function.inputs) == 0:
+            return
+        first_arg_name = function.inputs[0].name
+        if (first_arg_name in ('answerId', '_answer_id')) and (first_arg_name not in params):
+            params[first_arg_name] = 0
 
     # todo
     # async def emulate_local(

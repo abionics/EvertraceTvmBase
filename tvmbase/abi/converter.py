@@ -1,11 +1,16 @@
+import copy
+
 from jsonizer import Jsonizer
 from tonclient.types import AbiContract, AbiFunction, AbiEvent, AbiData, AbiParam
 
 
-def json_to_abi(json: dict) -> AbiContract:
-    # fix abi via removing "outputs" field
-    for event in json['events']:
-        event.pop('outputs', None)
+def json_to_abi(json: dict, mutate: bool = False) -> AbiContract:
+    # fix abi events - removing "outputs" field
+    if len(json['events']) > 0:
+        if not mutate:
+            json = copy.deepcopy(json)
+        for event in json['events']:
+            event.pop('outputs', None)
     parser = Jsonizer(AbiContract, AbiFunction, AbiEvent, AbiData, AbiParam, lowercase_keys=True, replace_space='_')
     return parser.parse(json)
 
