@@ -52,6 +52,12 @@ class BaseTvm(ABC):
             'data': data,
         }
 
+    def __eq__(self, other: 'BaseTvm') -> bool:
+        return self.idx == other.idx
+
+    def __lt__(self, other: 'BaseTvm') -> bool:
+        return self.idx < other.idx
+
     def __str__(self) -> str:
         return f'{self.__class__.__name__}<{self.idx}>'
 
