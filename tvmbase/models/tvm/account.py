@@ -8,9 +8,10 @@ from tvmbase.models.tvm.base import BaseTvm
 class Account(BaseTvm):
     DATA_TYPE: type = AccountData
 
-    def __init__(self, address: str, data: AccountData | None):
+    def __init__(self, address: str, data: AccountData | None, exists: bool = True):
         super().__init__(address)
         self.data = data
+        self.exists = exists
 
     @staticmethod
     def gql_query(address: str) -> ParamsOfQueryCollection:
@@ -26,15 +27,18 @@ class Account(BaseTvm):
         try:
             boc = result.result[0]['boc']
         except IndexError:
-            boc = None
+            boc = ...  # None is returned for Deleted accounts (acc_type=3, acc_type_name=NonExist)
         return await cls.from_boc(client, boc, idx=idx)
 
     @classmethod
     async def from_boc(cls, client: Client, boc: str, **kwargs) -> 'Account':
         kw_address = kwargs.pop('idx', None)
-        if boc is None:  # account is not exists
+        if boc is ...:  # account is never exists
             assert kw_address is not None, 'Account must have boc or address'
-            return cls(kw_address, data=None)
+            return cls(kw_address, data=None, exists=False)
+        if boc is None:  # account is deleted
+            assert kw_address is not None, 'Account must have boc or address'
+            return cls(kw_address, data=None, exists=True)
         parse_params = ParamsOfParse(boc=boc)
         parsed = await client.boc.parse_account(params=parse_params)
         address = parsed.parsed['id']
@@ -48,10 +52,6 @@ class Account(BaseTvm):
     @property
     def address(self) -> str:
         return self.idx
-
-    @property
-    def exists(self) -> bool:
-        return self.data is not None
 
     @property
     def balance(self) -> int:
