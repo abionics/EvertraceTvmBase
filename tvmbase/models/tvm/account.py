@@ -33,7 +33,7 @@ class Account(BaseTvm):
     @classmethod
     async def from_boc(cls, client: Client, boc: str, **kwargs) -> 'Account':
         kw_address = kwargs.pop('idx', None)
-        if boc is ...:  # account is never exists
+        if boc is ...:  # account is never exist
             assert kw_address is not None, 'Account must have boc or address'
             return cls(kw_address, data=None, exists=False)
         if boc is None:  # account is deleted
