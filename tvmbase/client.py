@@ -9,6 +9,7 @@ from tonclient.types import (
     CallSet,
     ParamsOfEncodeMessage,
     Signer,
+    ExecutionOptions,
     ParamsOfRunTvm,
 )
 
@@ -40,6 +41,7 @@ class Client(TonClient, metaclass=SingletonMeta):
             params: dict = None,
             auto_answer_id: bool = True,
             parse: bool = False,
+            execution_options: dict = None,
     ) -> dict | Any:
         """
         Use account or address_params
@@ -66,7 +68,15 @@ class Client(TonClient, metaclass=SingletonMeta):
         )
         message = await self.abi.encode_message(params=message_params)
 
-        run_params = ParamsOfRunTvm(message=message.message, account=account_boc, abi=abi)
+        if execution_options is not None:
+            execution_options = ExecutionOptions(**execution_options)
+
+        run_params = ParamsOfRunTvm(
+            message=message.message,
+            account=account_boc,
+            abi=abi,
+            execution_options=execution_options
+        )
         result = await self.tvm.run_tvm(params=run_params)
         decoded = result.decoded.output
 
