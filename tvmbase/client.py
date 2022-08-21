@@ -40,8 +40,8 @@ class Client(TonClient, metaclass=SingletonMeta):
             account_params: (str, str) = None,
             params: dict = None,
             auto_answer_id: bool = True,
-            parse: bool = False,
             execution_options: dict = None,
+            parse: bool = False,
     ) -> dict | Any:
         """
         Use account or address_params
@@ -75,7 +75,7 @@ class Client(TonClient, metaclass=SingletonMeta):
             message=message.message,
             account=account_boc,
             abi=abi,
-            execution_options=execution_options
+            execution_options=execution_options,
         )
         result = await self.tvm.run_tvm(params=run_params)
         decoded = result.decoded.output
