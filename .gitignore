@@ -3,6 +3,7 @@
 **/__pycache__/
 venv/
 
+# Build for pypi
 build/
 dist/
 **.egg-info/

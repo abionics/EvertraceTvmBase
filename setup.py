@@ -41,8 +41,8 @@ setup(
     ],
     packages=find_packages(exclude=['tests', 'examples']),
     install_requires=[
-        'ton-client-py>=1.36.0.0',
-        'attrs>=21.4.0',
+        'ton-client-py>=1.37.0.0',
+        'attrs>=22.1.0',
         'loguru>=0.6.0',
         'jsonizer>=1.2.0',
     ],

@@ -1,7 +1,8 @@
+# Dont forget to change `install_requires` in "setup.py"
 ton-client-py==1.37.0.0
 attrs==22.1.0
 loguru==0.6.0
 jsonizer==1.2.0
 
-# upload to pypi
+# Upload to pypi
 twine==4.0.1
