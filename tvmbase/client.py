@@ -29,7 +29,7 @@ class Client(TonClient, metaclass=SingletonMeta):
 
     @staticmethod
     def create_config(network: Network) -> ClientConfig:
-        network_config = NetworkConfig(endpoints=network.value.endpoints)
+        network_config = NetworkConfig(endpoints=network.endpoints)
         return ClientConfig(network=network_config)
 
     async def run_local(

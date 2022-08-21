@@ -1,38 +1,45 @@
 from dataclasses import dataclass
-from enum import Enum
 
-from tonclient.client import MAINNET_BASE_URLS, DEVNET_BASE_URLS
+from tvmbase.exceptions import UnknownNetworkException
 
 
-@dataclass
-class NetworkConfig:
+@dataclass(frozen=True, slots=True)
+class Network:
     endpoints: list[str]
     everlive_domain: str
     everscan_domain: str
 
-
-class Network(Enum):
-    MAIN = NetworkConfig(
-        MAINNET_BASE_URLS,
-        'ever.live',
-        'everscan.io',
-    )
-    DEV = NetworkConfig(
-        DEVNET_BASE_URLS,
-        'net.ever.live',
-        'dev.tonscan.io',
-    )
-    RED = NetworkConfig(
-        ['net.ton.red'],
-        'net.ton.red',
-        'everscan.io',
-    )
+    @classmethod
+    def mainnet(cls, evercloud_key: str) -> 'Network':
+        return cls(
+            [f'https://mainnet.evercloud.dev/{evercloud_key}/graphql'],
+            'ever.live',
+            'everscan.io',
+        )
 
     @classmethod
-    def from_name(cls, name: str) -> 'Network':
-        name = name.upper().removesuffix('NET')
-        return cls[name]
+    def devnet(cls, evercloud_key: str) -> 'Network':
+        return Network(
+            [f'https://devnet.evercloud.dev/{evercloud_key}/graphql'],
+            'ever.live',
+            'everscan.io',
+        )
 
-    @property
-    def value(self) -> NetworkConfig:
-        return super().value
+    @classmethod
+    def tonred(cls) -> 'Network':
+        return Network(
+            ['net.ton.red'],
+            'ever.live',
+            'everscan.io',
+        )
+
+    @classmethod
+    def from_name(cls, name: str, evercloud_key: str = None) -> 'Network':
+        match name.lower():
+            case 'main' | 'mainnet':
+                return cls.mainnet(evercloud_key)
+            case 'dev' | 'devnet':
+                return cls.devnet(evercloud_key)
+            case 'red' | 'tonred' | 'rednet':
+                return cls.tonred()
+        raise UnknownNetworkException(name)
