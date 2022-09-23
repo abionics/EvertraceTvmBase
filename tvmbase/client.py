@@ -13,6 +13,7 @@ from tonclient.types import (
     ParamsOfRunTvm,
 )
 
+from tvmbase.exceptions import ClientRunLocalException
 from tvmbase.models.network import Network
 from tvmbase.utils.singleton import SingletonMeta
 
@@ -82,7 +83,7 @@ class Client(TonClient, metaclass=SingletonMeta):
 
         if parse:
             if len(decoded) != 1:
-                raise Exception('Must be exact one output param for automatic parse')
+                raise ClientRunLocalException('Must be exact one output param for automatic parse')
             return decoded.popitem()[1]
         else:
             return decoded

@@ -1,45 +1,53 @@
 from dataclasses import dataclass
 
-from tvmbase.exceptions import UnknownNetworkException
+from tvmbase.exceptions import NetworkException
+from tvmbase.utils.singleton import SingletonMeta
 
 
 @dataclass(frozen=True, slots=True)
 class Network:
+    name: str
     endpoints: list[str]
     everlive_domain: str
     everscan_domain: str
 
-    @classmethod
-    def mainnet(cls, evercloud_key: str) -> 'Network':
-        return cls(
-            [f'https://mainnet.evercloud.dev/{evercloud_key}/graphql'],
-            'ever.live',
-            'everscan.io',
-        )
 
-    @classmethod
-    def devnet(cls, evercloud_key: str) -> 'Network':
+class NetworkFactory(metaclass=SingletonMeta):
+    custom_networks: dict[str, Network] = dict()
+
+    def __init__(self, evercloud_key: str):
+        self.evercloud_key = evercloud_key
+
+    def mainnet(self) -> Network:
         return Network(
-            [f'https://devnet.evercloud.dev/{evercloud_key}/graphql'],
-            'ever.live',
-            'everscan.io',
+            name='main',
+            endpoints=[f'https://mainnet.evercloud.dev/{self.evercloud_key}/graphql'],
+            everlive_domain='ever.live',
+            everscan_domain='everscan.io',
         )
 
-    @classmethod
-    def tonred(cls) -> 'Network':
+    def devnet(self) -> Network:
         return Network(
-            ['net.ton.red'],
-            'ever.live',
-            'everscan.io',
+            name='dev',
+            endpoints=[f'https://devnet.evercloud.dev/{self.evercloud_key}/graphql'],
+            everlive_domain='ever.live',
+            everscan_domain='everscan.io',
         )
 
-    @classmethod
-    def from_name(cls, name: str, evercloud_key: str = None) -> 'Network':
-        match name.lower():
+    def from_name(self, name: str) -> Network:
+        name = name.lower()
+        match name:
             case 'main' | 'mainnet':
-                return cls.mainnet(evercloud_key)
+                return self.mainnet()
             case 'dev' | 'devnet':
-                return cls.devnet(evercloud_key)
-            case 'red' | 'tonred' | 'rednet':
-                return cls.tonred()
-        raise UnknownNetworkException(name)
+                return self.devnet()
+        if name in self.custom_networks:
+            return self.custom_networks.get(name)
+        raise NetworkException(f'Unknown network "{name}"')
+
+    @staticmethod
+    def add_custom(network: Network):
+        NetworkFactory.custom_networks[network.name] = network
+
+    def get_all(self) -> list[Network]:
+        return [self.mainnet(), self.devnet()] + list(self.custom_networks.values())
